@@ -30,7 +30,9 @@ function rupiah(nilai) {
 
 function ambilNilai(id) {
     const elemen = document.getElementById(id);
-    return elemen ? Number(elemen.value) : NaN;
+    return elemen && elemen.value.trim() !
+       == ""
+       ? Number(elemen.value.replace(",",".")) : NaN;
 }
 
 function escapeHTML(teks) {
