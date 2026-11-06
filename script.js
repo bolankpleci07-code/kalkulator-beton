@@ -1,51 +1,225 @@
-function hitung() {
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    const nama = document.getElementById(
-        "namaProyek"
-    ).value;
+    <title>Kalkulator Beton V6.0</title>
 
-    const panjang = Number(
-        document.getElementById("panjang").value
-    );
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    const lebar = Number(
-        document.getElementById("lebar").value
-    );
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            padding: 15px;
+        }
 
-    const existing = Number(
-        document.getElementById("existing").value
-    );
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
 
-    const design = Number(
-        document.getElementById("design").value
-    );
+        .header {
+            background: #123b68;
+            color: white;
+            padding: 22px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+        }
 
-    if (!nama || panjang <= 0 || lebar <= 0) {
-        alert("Periksa nama proyek dan ukuran grid!");
-        return;
-    }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
 
-    const luas = panjang * lebar;
+        .header p {
+            font-size: 14px;
+        }
 
-    const beda = existing - design;
+        .card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px #00000012;
+        }
 
-    let cut = 0;
-    let fill = 0;
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #123b68;
+        }
 
-    if (beda > 0) {
-        cut = luas * beda;
-    } else if (beda < 0) {
-        fill = luas * Math.abs(beda);
-    }
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
 
-    const net = cut - fill;
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 14px;
+            background: white;
+        }
 
-    document.getElementById("hasil").innerHTML = `
-        <h3>Hasil Perhitungan</h3>
-        <p>Proyek: ${nama}</p>
-        <p>Luas Grid: ${luas.toFixed(2)} m²</p>
-        <p>Volume Cut: ${cut.toFixed(3)} m³</p>
-        <p>Volume Fill: ${fill.toFixed(3)} m³</p>
-        <p>Volume Bersih: ${net.toFixed(3)} m³</p>
-    `;
-}
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 4px 2px;
+        }
+
+        .btn-primary {
+            background: #1565c0;
+            color: white;
+        }
+
+        .btn-success {
+            background: #15803d;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .result {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 12px;
+        }
+
+        .result p {
+            margin: 9px 0;
+            font-size: 15px;
+        }
+
+        .number {
+            font-size: 23px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .small {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        @media(max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>KALKULATOR BETON V6.0</h1>
+        <p>Aplikasi perhitungan volume, material dan biaya beton</p>
+    </div>
+
+    <div class="card">
+        <h2>Data Proyek</h2>
+
+        <label>Nama Proyek</label>
+        <input type="text" id="namaProyek"
+               placeholder="Contoh: Pembangunan Rumah">
+
+        <label>Jenis Beton</label>
+        <select id="mutu">
+            <option value="K-225">K-225</option>
+            <option value="K-250">K-250</option>
+            <option value="K-300">K-300</option>
+            <option value="K-350">K-350</option>
+            <option value="Manual">Campuran manual</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <h2>Perhitungan Volume Beton</h2>
+
+        <label>Bentuk Beton</label>
+        <select id="bentuk">
+            <option value="balok">Balok / Plat</option>
+            <option value="kolom">Kolom</option>
+            <option value="silinder">Silinder</option>
+        </select>
+
+        <div class="grid">
+            <div>
+                <label>Panjang (meter)</label>
+                <input type="number" id="panjang"
+                       value="5" min="0" step="any">
+            </div>
+
+            <div>
+                <label>Lebar (meter)</label>
+                <input type="number" id="lebar"
+                       value="3" min="0" step="any">
+            </div>
+
+            <div>
+                <label>Tinggi / Tebal (meter)</label>
+                <input type="number" id="tinggi"
+                       value="0.15" min="0" step="any">
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="hitungVolume()">
+            HITUNG VOLUME
+        </button>
+
+        <div class="result">
+            <p>Volume Beton</p>
+            <div class="number" id="hasilVolume">0.000 m³</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Hasil Perhitungan</h2>
+        <div id="hasilMaterial">
+            Belum ada perhitungan.
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+// KODE JAVASCRIPT AKAN DILANJUTKAN DI BAGIAN BERIKUTNYA
+
+</script>
+
+</body>
+</html>
